@@ -1,4 +1,6 @@
 /.Rproj.user
+.RData
+.Rhistory
 # Unity3D generated meta files
 *.pidb.meta
 

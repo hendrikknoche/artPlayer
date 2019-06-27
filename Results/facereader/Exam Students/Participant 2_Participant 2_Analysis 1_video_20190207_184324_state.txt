@@ -1,0 +1,54 @@
+Video analysis state log
+
+Face Model:	General61
+Calibration:	None
+Start time:	30-01-2019 10:49:30.452
+Filename:	\Recorded Videos\Participant 2_Analysis 1_20190130_104930.avi
+Frame rate:	15
+
+Video Time	Emotion
+00:00:00.000	Unknown
+00:00:04.400	Happy
+00:00:05.400	Unknown
+00:00:09.533	Neutral
+00:00:11.466	Unknown
+00:02:58.000	Neutral
+00:02:58.800	Unknown
+00:20:57.200	Neutral
+00:20:58.666	Unknown
+00:21:00.333	Neutral
+00:21:01.800	Unknown
+00:22:15.000	Neutral
+00:22:18.266	Unknown
+00:22:27.933	Neutral
+00:22:28.666	Unknown
+00:22:33.533	Neutral
+00:22:36.400	Unknown
+00:22:40.066	Neutral
+00:22:41.133	Unknown
+00:22:49.133	Angry
+00:22:50.066	Happy
+00:22:53.333	Angry
+00:22:54.666	Unknown
+00:23:11.400	Neutral
+00:23:12.200	Happy
+00:23:12.933	Unknown
+00:23:20.266	Disgusted
+00:23:26.600	Unknown
+00:23:30.866	Happy
+00:23:33.133	Unknown
+00:23:39.400	Neutral
+00:23:40.866	Unknown
+00:23:42.533	Disgusted
+00:23:43.133	Angry
+00:23:43.866	Unknown
+00:24:20.000	Neutral
+00:24:21.666	Unknown
+00:24:29.933	Disgusted
+00:24:32.666	Unknown
+00:24:38.533	Neutral
+00:24:40.200	Unknown
+00:24:48.133	Happy
+00:24:48.800	Unknown
+00:24:57.400	Neutral
+00:25:04.933	END
