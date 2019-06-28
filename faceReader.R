@@ -1,4 +1,6 @@
-setwd("C:/Users/jwk_2/Desktop/Processed - Kopi/FaceReaderProcessed")
+library(here)
+setwd(paste(here::here("Processed - Kopi","FaceReaderProcessed")))
+
 library(reshape2)
 
 #face <- read.csv("Participant 1_Participant 1_Analysis 1_video_20190207_183558_detailed.txt", skip = 2, header = TRUE, sep = "\t")
@@ -138,13 +140,13 @@ summarySE <- function(data=NULL, measurevar, groupvars=NULL, na.rm=FALSE,
 temp <- melt(temp, id.vars=c("Stimulus"))
 #temp <- subset(temp,variable == "Neutral")
 gg2 <- summarySE(temp, measurevar="value", groupvars=c("variable")) #Udreger sd, se, og ci
-gg2 <- gg2[-c(5),] #Ikke helt sikker på hvad den gør
+gg2 <- gg2[-c(5),] #Ikke helt sikker p? hvad den g?r
 #pdf(file="ci2-plot.pdf",width=5,height=2.8)
-ggplot(gg2, aes(variable, value, colour=variable)) + theme_bw() + #hele plottet, sørg for at bruge de rigtige variabler
+ggplot(gg2, aes(variable, value, colour=variable)) + theme_bw() + #hele plottet, s?rg for at bruge de rigtige variabler
   geom_point(position=position_dodge(0.2), color="red", size=2.5) +
   scale_y_continuous(limits = c(0,1)) +
   geom_errorbar(aes(ymin=(gg2$value-gg2$ci), ymax=(gg2$value+gg2$ci)), width=.2, position = position_dodge(0.2), color="red") +
   ylab("Percentage") + xlab("Emotion") + theme(legend.position="none") +
   geom_jitter(data=temp, mapping=aes(variable, value), width=0.2, color="black", alpha=0.33, size=0.8)
 #dev.off()
-#Husk at ændre ylim så det passer
+#Husk at ?ndre ylim s? det passer

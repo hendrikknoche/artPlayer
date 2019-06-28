@@ -5,6 +5,8 @@ library(ggplot2)
 library(reshape2)
 library(plyr)
 library(Hmisc)
+library(here)
+setwd(paste(here::here("Processed - Kopi","data")))
 
 summarySE <- function(data=NULL, measurevar, groupvars=NULL, na.rm=FALSE,
                       conf.interval=.95, .drop=TRUE) {
@@ -42,17 +44,17 @@ summarySE <- function(data=NULL, measurevar, groupvars=NULL, na.rm=FALSE,
   return(datac)
 }
 
-Full <- read_excel("C:/Users/jwk_2/Desktop/Processed - Kopi/data/fdf-split.xlsx") #Henvis til de rigtige excel sheet
-#Excel sheetet skal have værdierne i kolonner
-Full <- subset(Full, PID != "") #Fjerner de rækker hvor der ingen værdier er
+Full <- read_excel("fdf-split.xlsx") #Henvis til de rigtige excel sheet
+#Excel sheetet skal have v?rdierne i kolonner
+Full <- subset(Full, PID != "") #Fjerner de r?kker hvor der ingen v?rdier er
 gg <- melt(Full, id.vars=c("episode")) #Samler tingene i forhold til Condition
 gg <- subset(gg, episode == "baseline")
-gg <- subset(gg, variable == "HF") #Vælg den specifikke variabel der skal kigges på
-gg[,3] <- sapply(gg[,3], as.numeric) #Sørger for det der skal arbjedes med er numre
-gg$episode <- as.factor(gg$episode) #Sørger for conditions bliver stående som faktorer frem for karaktere
+gg <- subset(gg, variable == "HF") #V?lg den specifikke variabel der skal kigges p?
+gg[,3] <- sapply(gg[,3], as.numeric) #S?rger for det der skal arbjedes med er numre
+gg$episode <- as.factor(gg$episode) #S?rger for conditions bliver st?ende som faktorer frem for karaktere
 gg2 <- summarySE(gg, measurevar="value", groupvars=c("episode")) #Udreger sd, se, og ci
-gg2 <- gg2[-c(5),] #Ikke helt sikker på hvad den gør
+gg2 <- gg2[-c(5),] #Ikke helt sikker p? hvad den g?r
 pdf(file="ci2-plot.pdf",width=5,height=2.8)
 ggplot(gg2, aes(episode, value))
 dev.off()
-#Husk at ændre ylim så det passer
+#Husk at ?ndre ylim s? det passer

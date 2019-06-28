@@ -5,8 +5,8 @@ library(ggplot2)
 library(reshape2)
 library(plyr)
 library(Hmisc)
-
-setwd("C:/Users/jwk_2/Desktop/Processed - Kopi/data")
+library(here)
+setwd(paste(here::here("Processed - Kopi","data")))
 
 summarySE <- function(data=NULL, measurevar, groupvars=NULL, na.rm=FALSE,
                       conf.interval=.95, .drop=TRUE) {
@@ -44,43 +44,43 @@ summarySE <- function(data=NULL, measurevar, groupvars=NULL, na.rm=FALSE,
   return(datac)
 }
 
-Full <- read_excel("C:/Users/jwk_2/Desktop/Processed - Kopi/data/fdf-split2.xlsx") #Henvis til de rigtige excel sheet
-#Excel sheetet skal have værdierne i kolonner
-Full <- subset(Full, PID != "") #Fjerner de rækker hvor der ingen værdier er
+Full <- read_excel("fdf-split2.xlsx") #Henvis til de rigtige excel sheet
+#Excel sheetet skal have v?rdierne i kolonner
+Full <- subset(Full, PID != "") #Fjerner de r?kker hvor der ingen v?rdier er
 episodes <- melt(Full, id.vars=c("episode")) #Samler tingene i forhold til Condition
 
 gg <- subset(episodes, episode == "baseline")
 gg <- gg[-(1:7), ]
 gg <- subset(gg, variable =="rMSSD")
-#gg <- subset(gg, variable == "rMSSD") #Vælg den specifikke variabel der skal kigges på
-gg[,3] <- sapply(gg[,3], as.numeric) #Sørger for det der skal arbjedes med er numre
-gg$episode <- as.factor(gg$episode) #Sørger for conditions bliver stående som faktorer frem for karaktere
+#gg <- subset(gg, variable == "rMSSD") #V?lg den specifikke variabel der skal kigges p?
+gg[,3] <- sapply(gg[,3], as.numeric) #S?rger for det der skal arbjedes med er numre
+gg$episode <- as.factor(gg$episode) #S?rger for conditions bliver st?ende som faktorer frem for karaktere
 
 gg2 <- subset(episodes, episode == "syringe")
 gg2 <- gg2[-(1:7), ]
 gg2 <- subset(gg2, variable =="rMSSD")
-gg2[,3] <- sapply(gg2[,3], as.numeric) #Sørger for det der skal arbjedes med er numre
-gg2$episode <- as.factor(gg2$episode) #Sørger for conditions bliver stående som faktorer frem for karaktere
+gg2[,3] <- sapply(gg2[,3], as.numeric) #S?rger for det der skal arbjedes med er numre
+gg2$episode <- as.factor(gg2$episode) #S?rger for conditions bliver st?ende som faktorer frem for karaktere
 gg2 <- subset(gg2, value != "")
 
 gg3 <- subset(episodes, episode == "ArtPlayer")
 gg3 <- gg3[-(1:7), ]
 gg3 <- subset(gg3, variable =="rMSSD")
-gg3[,3] <- sapply(gg3[,3], as.numeric) #Sørger for det der skal arbjedes med er numre
-gg3$episode <- as.factor(gg3$episode) #Sørger for conditions bliver stående som faktorer frem for karaktere
+gg3[,3] <- sapply(gg3[,3], as.numeric) #S?rger for det der skal arbjedes med er numre
+gg3$episode <- as.factor(gg3$episode) #S?rger for conditions bliver st?ende som faktorer frem for karaktere
 
 
 ggSum <- summarySE(gg, measurevar="value", groupvars=c("episode")) #Udreger sd, se, og ci
-ggSum <- ggSum[-c(5),] #Ikke helt sikker på hvad den gør
+ggSum <- ggSum[-c(5),] #Ikke helt sikker p? hvad den g?r
 ggSum2 <- summarySE(gg2, measurevar="value", groupvars=c("episode")) #Udreger sd, se, og ci
-ggSum2 <- ggSum2[-c(5),] #Ikke helt sikker på hvad den gør
+ggSum2 <- ggSum2[-c(5),] #Ikke helt sikker p? hvad den g?r
 ggSum3 <- summarySE(gg3, measurevar="value", groupvars=c("episode")) #Udreger sd, se, og ci
-ggSum3 <- ggSum3[-c(5),] #Ikke helt sikker på hvad den gør
+ggSum3 <- ggSum3[-c(5),] #Ikke helt sikker p? hvad den g?r
 
 sumCollected <- rbind(ggSum, ggSum2, ggSum3)
 
 pdf(file="ci2PlotrMSSD.pdf",width=5,height=2.8)
-ggplot(sumCollected, aes(episode, value, colour=episode)) + theme_bw() + #hele plottet, sørg for at bruge de rigtige variabler
+ggplot(sumCollected, aes(episode, value, colour=episode)) + theme_bw() + #hele plottet, s?rg for at bruge de rigtige variabler
   geom_point(position=position_dodge(0.2), color="red", size=2.5) +
   scale_y_continuous(limits = c(0,130)) +
   geom_errorbar(aes(ymin=(sumCollected$value-sumCollected$ci), ymax=(sumCollected$value+sumCollected$ci)), width=.2, position = position_dodge(0.2), color="red") +
@@ -90,4 +90,4 @@ ggplot(sumCollected, aes(episode, value, colour=episode)) + theme_bw() + #hele p
   geom_jitter(data=gg3, mapping=aes(episode, value), width=0.2, color="black", alpha=0.33, size=0.8)
 
 dev.off()
-#Husk at ændre ylim så det passer
+#Husk at ?ndre ylim s? det passer

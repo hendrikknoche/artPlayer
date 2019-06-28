@@ -1,10 +1,13 @@
+library(here)
 library(xlsx)
 library(ggplot2)
 library(dplyr)
 library(plyr)
+library(here)
+setwd(paste(here::here("Results","Polar","Johan")))
 
-episodes<-read.xlsx("/Users/hendrik/OneDrive - Aalborg Universitet/research projects/ArtPlayer/Colab experiment/data/Results/Polar/Johan/AllEpisodes.xlsx",1)
-IBI<-read.xlsx("/Users/hendrik/OneDrive - Aalborg Universitet/research projects/ArtPlayer/Colab experiment/data/Results/Polar/Johan/allIBIsbyPerson.xlsx",1)
+episodes<-read.xlsx("AllEpisodes.xlsx",1)
+IBI<-read.xlsx("allIBIsbyPerson.xlsx",1)
 IBI$time<-IBI$IBI/1000
 IBI$eachTime<-ave(IBI$IBI/1000, IBI$PID, FUN=cumsum)
 IBI$eachTimes=round(IBI$eachTime/60,1)
