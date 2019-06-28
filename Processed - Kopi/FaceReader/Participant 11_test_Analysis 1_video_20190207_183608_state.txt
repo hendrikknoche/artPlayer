@@ -1,0 +1,14 @@
+Video analysis state log
+
+Face Model:	General61
+Calibration:	None
+Start time:	29-01-2019 07:56:43.212
+Filename:	\Recorded Videos\Participant 11_Analysis 1_20190129_075643.avi
+Frame rate:	15
+
+Video Time	Emotion
+00:00:00.000	Unknown
+00:00:01.133	Neutral
+00:00:08.200	Unknown
+00:00:12.066	Neutral
+00:00:17.200	END

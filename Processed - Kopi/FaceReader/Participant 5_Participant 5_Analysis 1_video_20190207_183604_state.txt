@@ -1,0 +1,83 @@
+Video analysis state log
+
+Face Model:	General61
+Calibration:	None
+Start time:	29-01-2019 12:53:40.371
+Filename:	\Recorded Videos\Participant 5_Analysis 1_20190129_125340.avi
+Frame rate:	15
+
+Video Time	Emotion
+00:00:00.000	Unknown
+00:00:05.200	Neutral
+00:00:13.000	Unknown
+00:00:46.400	Neutral
+00:00:50.533	Unknown
+00:01:02.266	Neutral
+00:01:04.333	Unknown
+00:01:05.333	Neutral
+00:01:08.133	Happy
+00:01:13.000	Unknown
+00:01:32.400	Happy
+00:01:35.733	Unknown
+00:01:51.733	Neutral
+00:01:52.533	Unknown
+00:01:53.533	Neutral
+00:01:56.000	Unknown
+00:01:57.266	Happy
+00:01:58.200	Neutral
+00:02:00.600	Unknown
+00:02:06.933	Neutral
+00:02:08.533	Unknown
+00:02:19.133	Neutral
+00:02:22.266	Unknown
+00:03:21.733	Neutral
+00:07:01.000	Unknown
+00:07:03.666	Neutral
+00:07:04.733	Unknown
+00:07:09.800	Neutral
+00:07:11.066	Sad
+00:07:12.600	Unknown
+00:07:18.133	Neutral
+00:07:25.133	Sad
+00:07:26.600	Unknown
+00:07:28.133	Neutral
+00:07:36.400	Unknown
+00:07:37.600	Neutral
+00:07:40.266	Unknown
+00:07:41.600	Sad
+00:07:42.866	Happy
+00:07:44.066	Neutral
+00:07:45.733	Happy
+00:07:46.666	Sad
+00:07:49.200	Neutral
+00:07:52.066	Unknown
+00:07:56.200	Sad
+00:07:56.800	Unknown
+00:08:04.400	Neutral
+00:08:07.600	Unknown
+00:08:14.400	Neutral
+00:08:19.333	Unknown
+00:08:22.733	Neutral
+00:08:39.733	Sad
+00:08:40.466	Neutral
+00:15:09.466	Unknown
+00:15:11.333	Neutral
+00:15:13.533	Sad
+00:15:14.200	Neutral
+00:15:18.466	Unknown
+00:15:22.733	Happy
+00:15:24.600	Neutral
+00:15:27.333	Unknown
+00:16:53.466	Neutral
+00:16:57.866	Unknown
+00:16:59.400	Neutral
+00:17:00.200	Unknown
+00:17:16.733	Neutral
+00:17:17.333	Unknown
+00:18:04.200	Neutral
+00:18:04.866	Unknown
+00:20:07.866	Surprised
+00:20:08.466	Unknown
+00:20:10.133	Neutral
+00:20:14.200	Unknown
+00:20:16.333	END

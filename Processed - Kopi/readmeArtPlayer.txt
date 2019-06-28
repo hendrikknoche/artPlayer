@@ -1,0 +1,9 @@
+- Download all the files (likely using EliteHRV)
+- name the files to be abel to identify the participants (I suggest naming each file with the participant id)
+- for each measure file create a text file with timestamps using seconds. Use the template given. 
+- Be sure to use the same name as the file the time stamps fit with but with an added "_time" to make sure the files are in order
+- Set the working directory of the MIST.R script (setwd) to be the folder with the results.
+- Make sure the CreateTimeAnalysisByEpisode is in the working directory alongside the result files and their timestamps
+- Change the episodes in the episodes dataframe to fit with your project (or use the example)
+- Name the output file at the end of the script
+- Running the entire script should then output a .csv file named fdf with all the results
