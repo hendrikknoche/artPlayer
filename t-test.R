@@ -1,28 +1,30 @@
 library(readxl)
 library(sqldf)
+library(here)
+setwd(paste(here("Processed - Kopi","data")))
+Full <- read_excel("All Data.xlsx") #Henvis til de rigtige excel sheet
 library(lme4)
 library(ggplot2)
 library(reshape2)
 library(plyr)
 library(ggplot2)
 library(Hmisc)
-setwd("C:/Users/jwk_2/Desktop/Processed - Kopi/data") #set this to the right one
+ #set this to the right one
 
-Full <- read_excel("C:/Users/jwk_2/Desktop/Processed - Kopi/data/All Data.xlsx") #Henvis til de rigtige excel sheet
-Full <- subset(Full, PID != "") #Fjerner de rækker hvor der ingen værdier er
+Full <- subset(Full, PID != "") #Fjerner de r?kker hvor der ingen v?rdier er
 gg <- melt(Full, id.vars=c("episode")) #Samler tingene i forhold til Condition
 
-#gg <- subset(gg, variable == "Avg.HR") #Vælg den specifikke variabel der skal kigges på
-#gg <- subset(gg, variable == "HF") #Vælg den specifikke variabel der skal kigges på
-#gg <- subset(gg, variable == "LF") #Vælg den specifikke variabel der skal kigges på
-gg <- subset(gg, variable == "LFHF") #Vælg den specifikke variabel der skal kigges på
-#gg <- subset(gg, variable == "pNN50") #Vælg den specifikke variabel der skal kigges på
-#gg <- subset(gg, variable == "rMSSD") #Vælg den specifikke variabel der skal kigges på
-#gg <- subset(gg, variable == "SDNN") #Vælg den specifikke variabel der skal kigges på
-#gg <- subset(gg, variable == "RRS") #Vælg den specifikke variabel der skal kigges på
+#gg <- subset(gg, variable == "Avg.HR") #V?lg den specifikke variabel der skal kigges p?
+#gg <- subset(gg, variable == "HF") #V?lg den specifikke variabel der skal kigges p?
+#gg <- subset(gg, variable == "LF") #V?lg den specifikke variabel der skal kigges p?
+gg <- subset(gg, variable == "LFHF") #V?lg den specifikke variabel der skal kigges p?
+#gg <- subset(gg, variable == "pNN50") #V?lg den specifikke variabel der skal kigges p?
+#gg <- subset(gg, variable == "rMSSD") #V?lg den specifikke variabel der skal kigges p?
+#gg <- subset(gg, variable == "SDNN") #V?lg den specifikke variabel der skal kigges p?
+#gg <- subset(gg, variable == "RRS") #V?lg den specifikke variabel der skal kigges p?
 #gg <- subset(gg, value != "NA")
-gg[,3] <- sapply(gg[,3], as.numeric) #Sørger for det der skal arbjedes med er numre
-gg$episode <- as.factor(gg$episode) #Sørger for conditions bliver stående som faktorer frem for karaktere
+gg[,3] <- sapply(gg[,3], as.numeric) #S?rger for det der skal arbjedes med er numre
+gg$episode <- as.factor(gg$episode) #S?rger for conditions bliver st?ende som faktorer frem for karaktere
 
 baseline <- subset(gg, episode == "baseline")
 syringe <- subset(gg, episode == "syringe")
