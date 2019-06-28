@@ -12,5 +12,5 @@ sysinfo.txt
 *.unitypackage
 *.PNG
 *.png
-
+*.pdf
 .Rproj.user
