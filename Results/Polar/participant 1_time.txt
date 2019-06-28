@@ -1,0 +1,12 @@
+00:00:00	"Baseline"	211	0
+00:03:31	"Syringe"	120	0
+00:05:33	"ArtPlayer"	650	0
+00:02:12	"RRS1"	10	0
+00:04:00	"RRS2"	10	0
+00:16:52	"StopArtPlayer"	10	0
+00:17:02	"RRS3"	10	0
+00:17:12	"DataCheck"	60	0
+00:18:12	"ThreatRemoval"	10	0
+00:18:22	"RRS4"	10	0
+
+
