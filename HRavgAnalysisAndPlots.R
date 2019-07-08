@@ -1,5 +1,6 @@
 library(ggplot2)
 library(sqldf)
+library(here)
 setwd(paste(here::here("Processed - Kopi","data")))
 fdf<-read.csv("fdf.csv")
 fdfp <- summarySE(fdf, measurevar="Avg.HR", groupvars=c("episode"))
