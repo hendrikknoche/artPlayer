@@ -3,6 +3,12 @@ library(sqldf)
 library(here)
 setwd(paste(here::here("Processed - Kopi","data")))
 fdf<-read.csv("fdf.csv")
+fdf$episode<-gsub("ArtPlayer", "intervention", fdf$episode)
+fdf$episode<-gsub("Debrief", "debrief", fdf$episode)
+fdf$episode<-gsub("syringe", "stressor", fdf$episode)
+fdf$episode<-gsub("ThreatRemoval", "stressor removal", fdf$episode)
+fdf$episode<-factor(fdf$episode,levels=c("baseline","stressor","intervention","stressor removal", "debrief"))
+
 fdfp <- summarySE(fdf, measurevar="Avg.HR", groupvars=c("episode"))
 fdfBL<-fdf[fdf$episode=="baseline",c("PID","Avg.HR")]
 names(fdfBL)[2]="HRatBaseline"
@@ -13,9 +19,10 @@ fdf$HRchangeInBPM<-fdf$Avg.HR-fdf$HRatBaseline
 fdfpp<- summarySE(fdf, measurevar="HRchangeInPercent", groupvars=c("episode"))
 fdfpc<- summarySE(fdf, measurevar="HRchangeInBPM", groupvars=c("episode"))
 
-ggplot(fdfpc, aes(x=episode, y=HRchangeInBPM))+
-  geom_errorbar(aes(ymin=HRchangeInBPM-ci, ymax=HRchangeInBPM+ci), width=.1) 
 
-+
-  geom_line(position=pd) +
-  geom_point(position=pd)
+fdfpc
+
+ggplot(fdfpc[fdfpc$episode!="stressor removal",], aes(x=episode, y=-1*HRchangeInBPM,group=1))+
+  geom_errorbar(aes(ymin=-1*HRchangeInBPM-ci, ymax=-1*HRchangeInBPM+ci), width=.1) +
+  geom_line() +
+  geom_point()+ylab('heart rate reduction from baseline in BPM')+theme_bw()
