@@ -1,7 +1,7 @@
 library('RHRV')
 library(here)
 source("CreateTimeAnalysisByEpisodes.R")
-setwd(paste(here("Processed - Kopi","data")))
+setwd(paste(here::here("Processed - Kopi","data")))
 
 #import IBI data in milliseconds (three digits e.g 569, no decimal) from file
 #first set directory to where the data file is located - here it's to the HRV Data folder in Kejser's P8 Google Drive folder
