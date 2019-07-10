@@ -1,0 +1,512 @@
+mean = mean   (xx[[col]], na.rm=na.rm),
+sd   = sd     (xx[[col]], na.rm=na.rm)
+)
+},
+measurevar
+)
+# Rename the "mean" column
+datac <- rename(datac, c("mean" = measurevar))
+datac$se <- datac$sd / sqrt(datac$N)  # Calculate standard error of the mean
+# Confidence interval multiplier for standard error
+# Calculate t-statistic for confidence interval:
+# e.g., if conf.interval is .95, use .975 (above/below), and use df=N-1
+ciMult <- qt(conf.interval/2 + .5, datac$N-1)
+datac$ci <- datac$se * ciMult
+return(datac)
+}
+Full <- read_excel("C:/Users/jwk_2/Desktop/Processed - Kopi/data/fdf-split.xlsx") #Henvis til de rigtige excel sheet
+#Excel sheetet skal have værdierne i kolonner
+Full <- subset(Full, PID != "") #Fjerner de rækker hvor der ingen værdier er
+gg <- melt(Full, id.vars=c("episode")) #Samler tingene i forhold til Condition
+gg <- subset(gg, episode == "baseline")
+gg <- gg[-(1:7), ]
+gg <- subset(gg, variable =="HF")
+#gg <- subset(gg, variable == "HF") #Vælg den specifikke variabel der skal kigges på
+gg[,3] <- sapply(gg[,3], as.numeric) #Sørger for det der skal arbjedes med er numre
+gg$episode <- as.factor(gg$episode) #Sørger for conditions bliver stående som faktorer frem for karaktere
+gg2 <- summarySE(gg, measurevar="value", groupvars=c("episode")) #Udreger sd, se, og ci
+gg2 <- gg2[-c(5),] #Ikke helt sikker på hvad den gør
+pdf(file="ci2-plot.pdf",width=5,height=2.8)
+ggplot(gg2, aes(episode, value, colour=episode)) + theme_bw() + #hele plottet, sørg for at bruge de rigtige variabler
+geom_point(position=position_dodge(0.2), color="red", size=2.5) +
+scale_y_continuous(limits = c(-50,2100)) +
+geom_errorbar(aes(ymin=value-ci, ymax=value+ci), width=.2, position = position_dodge(0.2), color="red") +
+ylab("HF power ") + xlab("Episode") + theme(legend.position="none") +
+geom_jitter(data=gg, mapping=aes(episode, value), width=0.2, color="black", alpha=0.33, size=0.8)
+dev.off()
+source('C:/Users/jwk_2/Desktop/Rscripts-20190119T144547Z-001/Rscripts/importScript1-2.R', echo=TRUE)
+source('C:/Users/jwk_2/Desktop/Processed - Kopi/data/import.R', echo=TRUE)
+View(summarySE)
+View(gg2)
+plot(gg2)
+ggplot(gg2)
+Full <- read_excel("C:/Users/jwk_2/Desktop/Processed - Kopi/data/fdf-split.xlsx") #Henvis til de rigtige excel sheet
+#Excel sheetet skal have værdierne i kolonner
+Full <- subset(Full, PID != "") #Fjerner de rækker hvor der ingen værdier er
+gg <- melt(Full, id.vars=c("episode")) #Samler tingene i forhold til Condition
+gg <- subset(gg, episode == "baseline")
+gg <- gg[-(1:7), ]
+gg <- subset(gg, variable =="HF")
+#gg <- subset(gg, variable == "HF") #Vælg den specifikke variabel der skal kigges på
+gg[,3] <- sapply(gg[,3], as.numeric) #Sørger for det der skal arbjedes med er numre
+gg$episode <- as.factor(gg$episode) #Sørger for conditions bliver stående som faktorer frem for karaktere
+gg2 <- summarySE(gg, measurevar="value", groupvars=c("episode")) #Udreger sd, se, og ci
+gg2 <- gg2[-c(5),] #Ikke helt sikker på hvad den gør
+pdf(file="ci2-plot.pdf",width=5,height=2.8)
+ggplot(gg2, aes(episode, value, colour=variable)) + theme_bw() + #hele plottet, sørg for at bruge de rigtige variabler
+geom_point(position=position_dodge(0.2), color="red", size=2.5) +
+scale_y_continuous(limits = c(-200,200)) +
+geom_errorbar(aes(ymin=value-ci, ymax=value+ci), width=.2, position = position_dodge(0.2), color="red") +
+ylab("HF power ") + xlab("Episode") + theme(legend.position="none") +
+geom_jitter(data=gg, mapping=aes(episode, value), width=0.2, color="black", alpha=0.33, size=0.8)
+source('C:/Users/jwk_2/Desktop/Rscripts-20190119T144547Z-001/Rscripts/importScript1-2.R', echo=TRUE)
+ggplot(gg2)
+library(readxl)
+library(sqldf)
+library(ggplot2)
+library(reshape2)
+library(plyr)
+library(lme4)
+library(Hmisc)
+summarySE <- function(data=NULL, measurevar, groupvars=NULL, na.rm=FALSE,
+conf.interval=.95, .drop=TRUE) {
+library(plyr)
+# New version of length which can handle NA's: if na.rm==T, don't count them
+length2 <- function (x, na.rm=FALSE) {
+if (na.rm) sum(!is.na(x))
+else       length(x)
+}
+# This does the summary. For each group's data frame, return a vector with
+# N, mean, and sd
+datac <- ddply(data, groupvars, .drop=.drop,
+.fun = function(xx, col) {
+c(N    = length2(xx[[col]], na.rm=na.rm),
+mean = mean   (xx[[col]], na.rm=na.rm),
+sd   = sd     (xx[[col]], na.rm=na.rm)
+)
+},
+measurevar
+)
+# Rename the "mean" column
+datac <- rename(datac, c("mean" = measurevar))
+datac$se <- datac$sd / sqrt(datac$N)  # Calculate standard error of the mean
+# Confidence interval multiplier for standard error
+# Calculate t-statistic for confidence interval:
+# e.g., if conf.interval is .95, use .975 (above/below), and use df=N-1
+ciMult <- qt(conf.interval/2 + .5, datac$N-1)
+datac$ci <- datac$se * ciMult
+return(datac)
+}
+Full <- read_excel("C:/Users/jwk_2/Desktop/Processed - Kopi/data/fdf-split.xlsx") #Henvis til de rigtige excel sheet
+#Excel sheetet skal have værdierne i kolonner
+Full <- subset(Full, PID != "") #Fjerner de rækker hvor der ingen værdier er
+gg <- melt(Full, id.vars=c("episode")) #Samler tingene i forhold til Condition
+gg <- subset(gg, episode == "baseline")
+gg <- gg[-(1:7), ]
+gg <- subset(gg, variable =="HF")
+#gg <- subset(gg, variable == "HF") #Vælg den specifikke variabel der skal kigges på
+gg[,3] <- sapply(gg[,3], as.numeric) #Sørger for det der skal arbjedes med er numre
+gg$episode <- as.factor(gg$episode) #Sørger for conditions bliver stående som faktorer frem for karaktere
+gg2 <- summarySE(gg, measurevar="value", groupvars=c("episode")) #Udreger sd, se, og ci
+gg2 <- gg2[-c(5),] #Ikke helt sikker på hvad den gør
+ggplot(gg2)
+Full <- read_excel("C:/Users/jwk_2/Desktop/Rscripts-20190119T144547Z-001/Rscripts/gg_HF.xlsx") #Henvis til de rigtige excel sheet
+#Excel sheetet skal have værdierne i kolonner
+Full <- subset(Full, Participant != "") #Fjerner de rækker hvor der ingen værdier er
+gg <- melt(Full, id.vars=c("Condition")) #Samler tingene i forhold til Condition
+gg <- subset(gg, variable == "intervention_avg") #Vælg den specifikke variabel der skal kigges på
+gg[,3] <- sapply(gg[,3], as.numeric) #Sørger for det der skal arbjedes med er numre
+gg$Condition <- as.factor(gg$Condition) #Sørger for conditions bliver stående som faktorer frem for karaktere
+gg2 <- summarySE(gg, measurevar="value", groupvars=c("Condition")) #Udreger sd, se, og ci
+gg2 <- gg2[-c(5),] #Ikke helt sikker på hvad den gør
+ggplot(gg2)
+ggplot(gg2, aes(Condition, value, colour=Variable))
+ggplot(gg2, aes(Condition, value, colour=variable))
+ggplot(gg2, aes(Condition, value, colour=Condition))
+Full <- read_excel("C:/Users/jwk_2/Desktop/Processed - Kopi/data/fdf-split.xlsx") #Henvis til de rigtige excel sheet
+#Excel sheetet skal have værdierne i kolonner
+Full <- subset(Full, PID != "") #Fjerner de rækker hvor der ingen værdier er
+gg <- melt(Full, id.vars=c("episode")) #Samler tingene i forhold til Condition
+gg <- subset(gg, episode == "baseline")
+#gg <- subset(gg, variable == "HF") #Vælg den specifikke variabel der skal kigges på
+gg[,3] <- sapply(gg[,3], as.numeric) #Sørger for det der skal arbjedes med er numre
+gg <- subset(gg, variable =="HF")
+gg$episode <- as.factor(gg$episode) #Sørger for conditions bliver stående som faktorer frem for karaktere
+gg <- gg[-(1:7), ]
+gg2 <- summarySE(gg, measurevar="value", groupvars=c("episode")) #Udreger sd, se, og ci
+gg2 <- gg2[-c(5),] #Ikke helt sikker på hvad den gør
+Full <- read_excel("C:/Users/jwk_2/Desktop/Processed - Kopi/data/fdf-split.xlsx") #Henvis til de rigtige excel sheet
+#Excel sheetet skal have værdierne i kolonner
+Full <- subset(Full, PID != "") #Fjerner de rækker hvor der ingen værdier er
+gg <- melt(Full, id.vars=c("episode")) #Samler tingene i forhold til Condition
+gg <- subset(gg, episode == "baseline")
+gg <- gg[-(1:7), ]
+gg <- subset(gg, variable =="HF")
+#gg <- subset(gg, variable == "HF") #Vælg den specifikke variabel der skal kigges på
+gg[,3] <- sapply(gg[,3], as.numeric) #Sørger for det der skal arbjedes med er numre
+gg$episode <- as.factor(gg$episode) #Sørger for conditions bliver stående som faktorer frem for karaktere
+gg2 <- summarySE(gg, measurevar="value", groupvars=c("episode")) #Udreger sd, se, og ci
+gg2 <- gg2[-c(5),] #Ikke helt sikker på hvad den gør
+ggplot(gg2, value, colour=episode)
+ggplot(gg2, aes(value, colour=episode)
+ggplot(gg2, aes(value, colour=episode))
+ggplot(gg2, aes(episode, value, colour=episode))
+Full <- read_excel("C:/Users/jwk_2/Desktop/Rscripts-20190119T144547Z-001/Rscripts/gg_HF.xlsx") #Henvis til de rigtige excel sheet
+#Excel sheetet skal have værdierne i kolonner
+Full <- subset(Full, Participant != "") #Fjerner de rækker hvor der ingen værdier er
+gg <- melt(Full, id.vars=c("Condition")) #Samler tingene i forhold til Condition
+gg <- subset(gg, variable == "intervention_avg") #Vælg den specifikke variabel der skal kigges på
+gg[,3] <- sapply(gg[,3], as.numeric) #Sørger for det der skal arbjedes med er numre
+gg$Condition <- as.factor(gg$Condition) #Sørger for conditions bliver stående som faktorer frem for karaktere
+gg2 <- summarySE(gg, measurevar="value", groupvars=c("Condition")) #Udreger sd, se, og ci
+gg2 <- gg2[-c(5),] #Ikke helt sikker på hvad den gør
+ggplot(gg2, aes(Condition, value, colour=Condition)) + theme_bw() + #hele plottet, sørg for at bruge de rigtige variabler
+geom_point(position=position_dodge(0.2), color="red", size=2.5)
+Full <- read_excel("C:/Users/jwk_2/Desktop/Processed - Kopi/data/fdf-split.xlsx") #Henvis til de rigtige excel sheet
+#Excel sheetet skal have værdierne i kolonner
+Full <- subset(Full, PID != "") #Fjerner de rækker hvor der ingen værdier er
+gg <- melt(Full, id.vars=c("episode")) #Samler tingene i forhold til Condition
+gg <- subset(gg, episode == "baseline")
+gg <- gg[-(1:7), ]
+gg <- subset(gg, variable =="HF")
+#gg <- subset(gg, variable == "HF") #Vælg den specifikke variabel der skal kigges på
+gg[,3] <- sapply(gg[,3], as.numeric) #Sørger for det der skal arbjedes med er numre
+gg$episode <- as.factor(gg$episode) #Sørger for conditions bliver stående som faktorer frem for karaktere
+gg2 <- summarySE(gg, measurevar="value", groupvars=c("episode")) #Udreger sd, se, og ci
+gg2 <- gg2[-c(5),] #Ikke helt sikker på hvad den gør
+ggplot(gg2, aes(episode, value, colour=episode)) + theme_bw() + #hele plottet, sørg for at bruge de rigtige variabler
+geom_point(position=position_dodge(0.2), color="red", size=2.5)
+ggplot(gg2, aes(episode, value, colour=episode)) + theme_bw() + #hele plottet, sørg for at bruge de rigtige variabler
+geom_point(position=position_dodge(0.2), color="red", size=2.5) +
+scale_y_continuous(limits = c(-200,200))
+ggplot(gg2, aes(episode, value, colour=episode)) + theme_bw() + #hele plottet, sørg for at bruge de rigtige variabler
+geom_point(position=position_dodge(0.2), color="red", size=2.5) +
+scale_y_continuous(limits = c(0,300))
+ggplot(gg2, aes(episode, value, colour=episode)) + theme_bw() + #hele plottet, sørg for at bruge de rigtige variabler
+geom_point(position=position_dodge(0.2), color="red", size=2.5) +
+scale_y_continuous(limits = c(0,300)) +
+geom_errorbar(aes(ymin=value-ci, ymax=value+ci), width=.2, position = position_dodge(0.2), color="red"
+ggplot(gg2, aes(episode, value, colour=episode)) + theme_bw() + #hele plottet, sørg for at bruge de rigtige variabler
+geom_point(position=position_dodge(0.2), color="red", size=2.5) +
+scale_y_continuous(limits = c(0,300)) +
+geom_errorbar(aes(ymin=value-ci, ymax=value+ci), width=.2, position = position_dodge(0.2), color="red")
+ggplot(gg2, aes(episode, value, colour=episode)) + theme_bw() + #hele plottet, sørg for at bruge de rigtige variabler
+geom_point(position=position_dodge(0.2), color="red", size=2.5) +
+scale_y_continuous(limits = c(0,300)) +
+geom_errorbar(aes(ymin=(value-ci), ymax=(value+ci), width=.2, position = position_dodge(0.2), color="red")
+ggplot(gg2, aes(episode, value, colour=episode)) + theme_bw() + #hele plottet, sørg for at bruge de rigtige variabler
+geom_point(position=position_dodge(0.2), color="red", size=2.5) +
+scale_y_continuous(limits = c(0,300)) +
+geom_errorbar(aes(ymin=(value-ci), ymax=(value+ci)), width=.2, position = position_dodge(0.2), color="red")
+ggplot(gg2, aes(episode, value, colour=episode)) + theme_bw() + #hele plottet, sørg for at bruge de rigtige variabler
+geom_point(position=position_dodge(0.2), color="red", size=2.5) +
+scale_y_continuous(limits = c(0,300)) +
+geom_errorbar(aes(ymin=(gg2$value-gg2$ci), ymax=(gg2$value+gg2$ci)), width=.2, position = position_dodge(0.2), color="red")
+ggplot(gg2, aes(episode, value, colour=episode)) + theme_bw() + #hele plottet, sørg for at bruge de rigtige variabler
+geom_point(position=position_dodge(0.2), color="red", size=2.5) +
+scale_y_continuous(limits = c(0,300)) +
+geom_errorbar(aes(ymin=(gg2$value-gg2$ci), ymax=(gg2$value+gg2$ci)), width=.2, position = position_dodge(0.2), color="red") +
+ylab("HF power ") + xlab("Episode") + theme(legend.position="none")
+ggplot(gg2, aes(episode, value, colour=episode)) + theme_bw() + #hele plottet, sørg for at bruge de rigtige variabler
+geom_point(position=position_dodge(0.2), color="red", size=2.5) +
+scale_y_continuous(limits = c(0,300)) +
+geom_errorbar(aes(ymin=(gg2$value-gg2$ci), ymax=(gg2$value+gg2$ci)), width=.2, position = position_dodge(0.2), color="red") +
+ylab("HF power ") + xlab("Episode") + theme(legend.position="none") +
+geom_jitter(data=gg, mapping=aes(episode, value), width=0.2, color="black", alpha=0.33, size=0.8)
+source('C:/Users/jwk_2/Desktop/Processed - Kopi/data/import.R', echo=TRUE)
+library(readxl)
+library(sqldf)
+library(lme4)
+library(ggplot2)
+library(reshape2)
+library(plyr)
+library(Hmisc)
+summarySE <- function(data=NULL, measurevar, groupvars=NULL, na.rm=FALSE,
+conf.interval=.95, .drop=TRUE) {
+library(plyr)
+# New version of length which can handle NA's: if na.rm==T, don't count them
+length2 <- function (x, na.rm=FALSE) {
+if (na.rm) sum(!is.na(x))
+else       length(x)
+}
+# This does the summary. For each group's data frame, return a vector with
+# N, mean, and sd
+datac <- ddply(data, groupvars, .drop=.drop,
+.fun = function(xx, col) {
+c(N    = length2(xx[[col]], na.rm=na.rm),
+mean = mean   (xx[[col]], na.rm=na.rm),
+sd   = sd     (xx[[col]], na.rm=na.rm)
+)
+},
+measurevar
+)
+# Rename the "mean" column
+datac <- rename(datac, c("mean" = measurevar))
+datac$se <- datac$sd / sqrt(datac$N)  # Calculate standard error of the mean
+# Confidence interval multiplier for standard error
+# Calculate t-statistic for confidence interval:
+# e.g., if conf.interval is .95, use .975 (above/below), and use df=N-1
+ciMult <- qt(conf.interval/2 + .5, datac$N-1)
+datac$ci <- datac$se * ciMult
+return(datac)
+}
+Full <- read_excel("C:/Users/jwk_2/Desktop/Processed - Kopi/data/fdf-split.xlsx") #Henvis til de rigtige excel sheet
+#Excel sheetet skal have værdierne i kolonner
+Full <- subset(Full, PID != "") #Fjerner de rækker hvor der ingen værdier er
+gg <- melt(Full, id.vars=c("episode")) #Samler tingene i forhold til Condition
+gg <- subset(gg, episode == "baseline")
+gg <- gg[-(1:7), ]
+gg <- subset(gg, variable =="HF")
+#gg <- subset(gg, variable == "HF") #Vælg den specifikke variabel der skal kigges på
+gg[,3] <- sapply(gg[,3], as.numeric) #Sørger for det der skal arbjedes med er numre
+gg$episode <- as.factor(gg$episode) #Sørger for conditions bliver stående som faktorer frem for karaktere
+gg2 <- summarySE(gg, measurevar="value", groupvars=c("episode")) #Udreger sd, se, og ci
+gg2 <- gg2[-c(5),] #Ikke helt sikker på hvad den gør
+pdf(file="ci2-plot.pdf",width=5,height=2.8)
+ggplot(gg2, aes(episode, value, colour=episode)) + theme_bw() + #hele plottet, sørg for at bruge de rigtige variabler
+geom_point(position=position_dodge(0.2), color="red", size=2.5) +
+scale_y_continuous(limits = c(0,300)) +
+geom_errorbar(aes(ymin=(gg2$value-gg2$ci), ymax=(gg2$value+gg2$ci)), width=.2, position = position_dodge(0.2), color="red") +
+ylab("HF power ") + xlab("Episode") + theme(legend.position="none") +
+geom_jitter(data=gg, mapping=aes(episode, value), width=0.2, color="black", alpha=0.33, size=0.8)
+library(readxl)
+library(sqldf)
+library(lme4)
+library(ggplot2)
+library(reshape2)
+library(plyr)
+library(Hmisc)
+summarySE <- function(data=NULL, measurevar, groupvars=NULL, na.rm=FALSE,
+conf.interval=.95, .drop=TRUE) {
+library(plyr)
+# New version of length which can handle NA's: if na.rm==T, don't count them
+length2 <- function (x, na.rm=FALSE) {
+if (na.rm) sum(!is.na(x))
+else       length(x)
+}
+# This does the summary. For each group's data frame, return a vector with
+# N, mean, and sd
+datac <- ddply(data, groupvars, .drop=.drop,
+.fun = function(xx, col) {
+c(N    = length2(xx[[col]], na.rm=na.rm),
+mean = mean   (xx[[col]], na.rm=na.rm),
+sd   = sd     (xx[[col]], na.rm=na.rm)
+)
+},
+measurevar
+)
+# Rename the "mean" column
+datac <- rename(datac, c("mean" = measurevar))
+datac$se <- datac$sd / sqrt(datac$N)  # Calculate standard error of the mean
+# Confidence interval multiplier for standard error
+# Calculate t-statistic for confidence interval:
+# e.g., if conf.interval is .95, use .975 (above/below), and use df=N-1
+ciMult <- qt(conf.interval/2 + .5, datac$N-1)
+datac$ci <- datac$se * ciMult
+return(datac)
+}
+Full <- read_excel("C:/Users/jwk_2/Desktop/Processed - Kopi/data/fdf-split.xlsx") #Henvis til de rigtige excel sheet
+#Excel sheetet skal have værdierne i kolonner
+Full <- subset(Full, PID != "") #Fjerner de rækker hvor der ingen værdier er
+gg <- melt(Full, id.vars=c("episode")) #Samler tingene i forhold til Condition
+gg <- subset(gg, episode == "baseline")
+gg <- gg[-(1:7), ]
+gg <- subset(gg, variable =="HF")
+#gg <- subset(gg, variable == "HF") #Vælg den specifikke variabel der skal kigges på
+gg[,3] <- sapply(gg[,3], as.numeric) #Sørger for det der skal arbjedes med er numre
+gg$episode <- as.factor(gg$episode) #Sørger for conditions bliver stående som faktorer frem for karaktere
+gg2 <- summarySE(gg, measurevar="value", groupvars=c("episode")) #Udreger sd, se, og ci
+gg2 <- gg2[-c(5),] #Ikke helt sikker på hvad den gør
+pdf(file="ci2-plot.pdf",width=5,height=2.8)
+ggplot(gg2, aes(episode, value, colour=episode)) + theme_bw() + #hele plottet, sørg for at bruge de rigtige variabler
+geom_point(position=position_dodge(0.2), color="red", size=2.5) +
+scale_y_continuous(limits = c(0,300)) +
+geom_errorbar(aes(ymin=(gg2$value-gg2$ci), ymax=(gg2$value+gg2$ci)), width=.2, position = position_dodge(0.2), color="red") +
+ylab("HF power ") + xlab("Episode") + theme(legend.position="none") +
+geom_jitter(data=gg, mapping=aes(episode, value), width=0.2, color="black", alpha=0.33, size=0.8)
+dev.off()
+source('C:/Users/jwk_2/Desktop/Processed - Kopi/data/import.R', echo=TRUE)
+source('C:/Users/jwk_2/Desktop/Processed - Kopi/data/import.R', echo=TRUE)
+rnorm
+test <- rnorm(100)
+test <- list(rnorm(100))
+words1 = rnorm(100); words2 = rt(100, df=3)
+## Have a look at the densities
+plot(density(words1));plot(density(words2))
+## Perform the test
+shapiro.test(words1); shapiro.test(words2)
+## Plot using a qqplot
+qqnorm(words1);qqline(words1, col = 2)
+qqnorm(words2);qqline(words2, col = 2)
+shapiro.test(words1)
+qqnorm(words1)
+qqnorm(words1, col = 2)
+qqnorm(test)
+shapiro.test(test)
+test <- as.numeric(test)
+test <- unlist(test)
+shapiro.test(test)
+qqplot(test)
+qqnorm(test)
+qqline(test, col = 2)
+test = 0
+test = vector()
+test <- vector()
+test <- 4l
+library(ggplot2)
+library(sqldf)
+library(here)
+library(Rmisc)
+setwd(paste(here::here("Data","real data")))
+fdf<-read.csv("fdf.csv")
+install.packages("here")
+library(ggplot2)
+library(sqldf)
+library(here)
+library(Rmisc)
+install.packages("Rmisc")
+library(ggplot2)
+library(sqldf)
+library(here)
+library(Rmisc)
+setwd(paste(here::here("Data","real data")))
+source('C:/Users/jwk_2/Desktop/Data Analysis-20190702T120631Z-001/Data Analysis/HRV/hrvavg.R', echo=TRUE)
+source('C:/Users/jwk_2/Desktop/Data Analysis-20190702T120631Z-001/Data Analysis/HRV/hrvavg.R', echo=TRUE)
+source('C:/Users/jwk_2/Desktop/Data Analysis-20190702T120631Z-001/Data Analysis/HRV/hrvavg.R', echo=TRUE)
+pd <- position_dodge(0.1) # move them .05 to the left and right
+ggplot(fdfpc[fdfpc$episode!="stressor removal",], aes(x=episode, y=-1*HRchangeInBPM,group=1))+
+geom_errorbar(aes(ymin=-1*HRchangeInBPM-ci, ymax=-1*HRchangeInBPM+ci), width=.1) +
+geom_line(position = pd) +
+geom_point(position = pd)+ylab('heart rate reduction from baseline in BPM')+theme_bw() + ggtitle("All Conditions")
+pd <- position_dodge(0.1) # move them .05 to the left and right
+ggplot(fdfpc[fdfpc$episode!="stressor removal",], aes(x=episode, y=-1*HRchangeInBPM,group=1))+
+geom_errorbar(aes(ymin=-1*HRchangeInBPM-ci, ymax=-1*HRchangeInBPM+ci), width=.1) +
+geom_line(position = pd) +
+geom_point(position = pd)+ylab('heart rate reduction from baseline in BPM')+theme_bw() + ggtitle("All Conditions")
+ggplot(fdfpc[fdfpc$episode!="stressor removal",], aes(x=episode, y=-1*HRchangeInBPM,group=1))+
+geom_errorbar(aes(ymin=-1*HRchangeInBPM-ci, ymax=-1*HRchangeInBPM+ci), width=.1, position = pd) +
+geom_line(position = pd) +
+geom_point(position = pd)+ylab('heart rate reduction from baseline in BPM')+theme_bw() + ggtitle("All Conditions")
+ggplot(fdfpc[fdfpc$episode!="stressor removal",], aes(x=episode, y=-1*HRchangeInBPM,group=1))+
+geom_errorbar(aes(ymin=-1*HRchangeInBPM-ci, ymax=-1*HRchangeInBPM+ci), width=.1, position = pd) +
+geom_line(position = pd) +
+geom_point(position = pd)+ylab('heart rate reduction from baseline in BPM')+theme_bw() + ggtitle("All Conditions")
+pd <- position_dodge(0.2) # move them .05 to the left and right
+ggplot(fdfpc[fdfpc$episode!="stressor removal",], aes(x=episode, y=-1*HRchangeInBPM,group=1))+
+geom_errorbar(aes(ymin=-1*HRchangeInBPM-ci, ymax=-1*HRchangeInBPM+ci), width=.1, position = pd) +
+geom_line(position = pd) +
+geom_point(position = pd)+ylab('heart rate reduction from baseline in BPM')+theme_bw() + ggtitle("All Conditions")
+pd <- position_dodge(0.4) # move them .05 to the left and right
+ggplot(fdfpc[fdfpc$episode!="stressor removal",], aes(x=episode, y=-1*HRchangeInBPM,group=1))+
+geom_errorbar(aes(ymin=-1*HRchangeInBPM-ci, ymax=-1*HRchangeInBPM+ci), width=.1, position = pd) +
+geom_line(position = pd) +
+geom_point(position = pd)+ylab('heart rate reduction from baseline in BPM')+theme_bw() + ggtitle("All Conditions")
+ggplot(fdfpc[fdfpc$episode!="stressor removal",], aes(x=episode, y=-1*HRchangeInBPM,group=1))+
+geom_errorbar(aes(ymin=-1*HRchangeInBPM-ci, ymax=-1*HRchangeInBPM+ci), width=.1, position = pd) +
+geom_line(position = pd) +
+geom_point(position = pd)+ylab('heart rate reduction from baseline in BPM') + ggtitle("All Conditions")
+ggplot(fdfpc[fdfpc$episode!="stressor removal",], aes(x=episode, y=-1*HRchangeInBPM,group=1, colour = supp))+
+geom_errorbar(aes(ymin=-1*HRchangeInBPM-ci, ymax=-1*HRchangeInBPM+ci), width=.1, position = pd) +
+geom_line(position = pd) +
+geom_point(position = pd)+ylab('heart rate reduction from baseline in BPM')+theme_bw() + ggtitle("All Conditions")
+ggplot(fdfpc[fdfpc$episode!="stressor removal",], aes(x=episode, y=-1*HRchangeInBPM,group=1, colour = condition))+
+geom_errorbar(aes(ymin=-1*HRchangeInBPM-ci, ymax=-1*HRchangeInBPM+ci), width=.1, position = pd) +
+geom_line(position = pd) +
+geom_point(position = pd)+ylab('heart rate reduction from baseline in BPM')+theme_bw() + ggtitle("All Conditions")
+ggplot(fdfpc[fdfpc$episode!="stressor removal",], aes(x=episode, y=-1*HRchangeInBPM,group=1, colour = condition))+
+geom_errorbar(aes(ymin=-1*HRchangeInBPM-ci, ymax=-1*HRchangeInBPM+ci), width=.1, position = pd) +
+geom_line(position = pd) +
+geom_point(position = pd)+ylab('heart rate reduction from baseline in BPM')+theme_bw() + ggtitle("All Conditions")
+ggplot(fdfpc[fdfpc$episode!="stressor removal",], aes(x=episode, y=-1*HRchangeInBPM,group=1, colour = condition))+
+geom_errorbar(aes(ymin=-1*HRchangeInBPM-ci, ymax=-1*HRchangeInBPM+ci), width=.1, position=pd) +
+geom_line(position=pd) +
+geom_point(position=pd)+ylab('heart rate reduction from baseline in BPM')+theme_bw() + ggtitle("All Conditions")
+pd <- position_dodge(0.1) # move them .05 to the left and right
+ggplot(fdfpc[fdfpc$episode!="stressor removal",], aes(x=episode, y=-1*HRchangeInBPM,group=1, colour = condition))+
+geom_errorbar(aes(ymin=-1*HRchangeInBPM-ci, ymax=-1*HRchangeInBPM+ci), width=.1, position=pd) +
+geom_line(position=pd) +
+geom_point(position=pd)+ylab('heart rate reduction from baseline in BPM')+theme_bw() + ggtitle("All Conditions")
+ggplot(fdfpc[fdfpc$episode!="stressor removal",], aes(x=episode, y=-1*HRchangeInBPM,group=1, colour = condition))+
+geom_errorbar(aes(ymin=-1*HRchangeInBPM-ci, ymax=-1*HRchangeInBPM+ci), width=.1, position="dodge") +
+geom_line(position="dodge") +
+geom_point(position="dodge")+ylab('heart rate reduction from baseline in BPM')+theme_bw() + ggtitle("All Conditions")
+ggplot(fdfpc[fdfpc$episode!="stressor removal",], aes(x=episode, y=-1*HRchangeInBPM,group=1, colour = condition))+
+geom_errorbar(aes(ymin=-1*HRchangeInBPM-ci, ymax=-1*HRchangeInBPM+ci), width=.1, position="dodge2") +
+geom_line(position="dodge2") +
+geom_point(position="dodge2")+ylab('heart rate reduction from baseline in BPM')+theme_bw() + ggtitle("All Conditions")
+ggplot(fdfpc[fdfpc$episode!="stressor removal",], aes(x=episode, y=-1*HRchangeInBPM,group=1, colour = condition))+
+geom_errorbar(aes(ymin=-1*HRchangeInBPM-ci, ymax=-1*HRchangeInBPM+ci), width=.1) +
+geom_line(position="dodge") +
+geom_point(position="dodge")+ylab('heart rate reduction from baseline in BPM')+theme_bw() + ggtitle("All Conditions")
+ggplot(fdfpc[fdfpc$episode!="stressor removal",], aes(x=episode, y=-1*HRchangeInBPM,group=1, colour = condition))+
+geom_errorbar(aes(ymin=-1*HRchangeInBPM-ci, ymax=-1*HRchangeInBPM+ci), width=.1) +
+geom_line(position="dodge2") +
+geom_point(position="dodge2")+ylab('heart rate reduction from baseline in BPM')+theme_bw() + ggtitle("All Conditions")
+ggplot(fdfpc[fdfpc$episode!="stressor removal",], aes(x=episode, y=-1*HRchangeInBPM,group=1, colour = condition))+
+geom_errorbar(aes(ymin=-1*HRchangeInBPM-ci, ymax=-1*HRchangeInBPM+ci), width=.1) +
+geom_line(position=position_dodge()) +
+geom_point(position=position_dodge())+ylab('heart rate reduction from baseline in BPM')+theme_bw() + ggtitle("All Conditions")
+ggplot(fdfpc[fdfpc$episode!="stressor removal",], aes(x=episode, y=-1*HRchangeInBPM,group=1, colour = condition))+
+geom_errorbar(aes(ymin=-1*HRchangeInBPM-ci, ymax=-1*HRchangeInBPM+ci), width=.1) +
+geom_line(position=position_dodge(0.1)) +
+geom_point(position=position_dodge(0.1))+ylab('heart rate reduction from baseline in BPM')+theme_bw() + ggtitle("All Conditions")
+ggplot(fdfpc[fdfpc$episode!="stressor removal",], aes(x=episode, y=-1*HRchangeInBPM,group=1, colour = condition))+
+geom_errorbar(aes(ymin=-1*HRchangeInBPM-ci, ymax=-1*HRchangeInBPM+ci), width=.1) +
+geom_line(position=position_dodge(width = 0.1)) +
+geom_point(position=position_dodge(width = 0.1))+ylab('heart rate reduction from baseline in BPM')+theme_bw() + ggtitle("All Conditions")
+ggplot(fdfpc[fdfpc$episode!="stressor removal",], aes(x=episode, y=-1*HRchangeInBPM,group=1, colour = condition))+
+geom_errorbar(aes(ymin=-1*HRchangeInBPM-ci, ymax=-1*HRchangeInBPM+ci), width=.1) +
+geom_line(position=position_dodge(width = 0.9)) +
+geom_point(position=position_dodge(width = 0.9))+ylab('heart rate reduction from baseline in BPM')+theme_bw() + ggtitle("All Conditions")
+ggplot(fdfpc[fdfpc$episode!="stressor removal",], aes(x=episode, y=-1*HRchangeInBPM,group=1, colour = condition))+
+geom_errorbar(aes(ymin=-1*HRchangeInBPM-ci, ymax=-1*HRchangeInBPM+ci), width=.1) +
+geom_line() +
+geom_point(position=position_dodge(width = 0.9))+ylab('heart rate reduction from baseline in BPM')+theme_bw() + ggtitle("All Conditions")
+ggplot(fdfpc[fdfpc$episode!="stressor removal",], aes(x=episode, y=-1*HRchangeInBPM,group=1, colour = condition))+
+geom_errorbar(aes(ymin=-1*HRchangeInBPM-ci, ymax=-1*HRchangeInBPM+ci), width=.1) +
+geom_line() +
+geom_point()+ylab('heart rate reduction from baseline in BPM')+theme_bw() + ggtitle("All Conditions")
+ggplot(fdfpc[fdfpc$episode!="stressor removal",], aes(x=episode, y=-1*HRchangeInBPM,group=1, colour = condition))+
+geom_errorbar(aes(ymin=-1*HRchangeInBPM-ci, ymax=-1*HRchangeInBPM+ci), width=.1) +
+geom_line(stat = identity, position = position_dodge(width = 0.5)) +
+geom_point()+ylab('heart rate reduction from baseline in BPM')+theme_bw() + ggtitle("All Conditions")
+ggplot(fdfpc[fdfpc$episode!="stressor removal",], aes(x=episode, y=-1*HRchangeInBPM,group=1, colour = condition))+
+geom_errorbar(aes(ymin=-1*HRchangeInBPM-ci, ymax=-1*HRchangeInBPM+ci), width=.1) +
+geom_line(stat = "identity", position = position_dodge(width = 0.5)) +
+geom_point()+ylab('heart rate reduction from baseline in BPM')+theme_bw() + ggtitle("All Conditions")
+ggplot(fdfpc[fdfpc$episode!="stressor removal",], aes(x=episode, y=-1*HRchangeInBPM,group=1, colour = condition))+
+geom_errorbar(aes(ymin=-1*HRchangeInBPM-ci, ymax=-1*HRchangeInBPM+ci), width=.1) +
+geom_line() +
+geom_point(stat = "identity", position = position_dodge(width = 0.5))+ylab('heart rate reduction from baseline in BPM')+theme_bw() + ggtitle("All Conditions")
+ggplot(fdfpc[fdfpc$episode!="stressor removal",], aes(x=episode, y=-1*HRchangeInBPM,group=1, colour = condition))+
+geom_errorbar(aes(ymin=-1*HRchangeInBPM-ci, ymax=-1*HRchangeInBPM+ci), width=.1) +
+geom_line() +
+geom_point()+ylab('heart rate reduction from baseline in BPM')+theme_bw() + ggtitle("All Conditions")
+ggplot(fdfpc[fdfpc$condition=="tv+",], aes(x=episode, y=-1*HRchangeInBPM,group=1))+
+geom_errorbar(aes(ymin=-1*HRchangeInBPM-ci, ymax=-1*HRchangeInBPM+ci), width=.1) +
+geom_line() +
+geom_point()+ylab('heart rate reduction from baseline in BPM')+theme_bw() + ggtitle("TV Condition")
+ggplot(fdfpc[fdfpc$condition=="vr+",], aes(x=episode, y=-1*HRchangeInBPM,group=1))+
+geom_errorbar(aes(ymin=-1*HRchangeInBPM-ci, ymax=-1*HRchangeInBPM+ci), width=.1) +
+geom_line() +
+geom_point()+ylab('heart rate reduction from baseline in BPM')+theme_bw() + ggtitle("VR with Distractors")
+ggplot(fdfpc[fdfpc$condition=="vr-",], aes(x=episode, y=-1*HRchangeInBPM,group=1))+
+geom_errorbar(aes(ymin=-1*HRchangeInBPM-ci, ymax=-1*HRchangeInBPM+ci), width=.1) +
+geom_line() +
+geom_point()+ylab('heart rate reduction from baseline in BPM')+theme_bw() + ggtitle("VR without Distractors")
+ggplot(fdfpp[fdfpp$episode!="stressor removal",], aes(x=episode, y=-1*HRchangeInPercent,group=1, colour = condition))+
+geom_errorbar(aes(ymin=-1*HRchangeInPercent-ci, ymax=-1*HRchangeInPercent+ci), width=.1) +
+geom_line() +
+geom_point()+ylab('heart rate change from baseline in percent')+theme_bw() + ggtitle("All Conditions")
+ggplot(fdfpp[fdfpp$condition=="tv+",], aes(x=episode, y=-1*HRchangeInPercent,group=1))+
+geom_errorbar(aes(ymin=-1*HRchangeInPercent-ci, ymax=-1*HRchangeInPercent+ci), width=.1) +
+geom_line() +
+geom_point()+ylab('heart rate change from baseline in percent')+theme_bw() + ggtitle("TV Condition")
+ggplot(fdfpp[fdfpp$condition=="vr+",], aes(x=episode, y=-1*HRchangeInPercent,group=1))+
+geom_errorbar(aes(ymin=-1*HRchangeInPercent-ci, ymax=-1*HRchangeInPercent+ci), width=.1) +
+geom_line() +
+geom_point()+ylab('heart rate change from baseline in percent')+theme_bw() + ggtitle("VR with Distractors")
+ggplot(fdfpp[fdfpp$condition=="vr-",], aes(x=episode, y=-1*HRchangeInPercent,group=1))+
+geom_errorbar(aes(ymin=-1*HRchangeInPercent-ci, ymax=-1*HRchangeInPercent+ci), width=.1) +
+geom_line() +
+geom_point()+ylab('heart rate change from baseline in percent')+theme_bw() + ggtitle("VR without Distractors")
