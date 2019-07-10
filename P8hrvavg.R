@@ -1,10 +1,10 @@
-setwd("C:/Users/Lasse/Desktop/HRV-AVG")
+
 library(ggplot2)
 library(sqldf)
 library(here)
 library(Rmisc)
 library(readxl)
-setwd(paste(here::here("Data","real data")))
+setwd(paste(here::here("P8dataVRTV")))
 #fdf<-read.csv("fdf.csv")
 
 fdf<-read_excel("fdf-split.xlsx")
