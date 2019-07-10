@@ -1,5 +1,6 @@
 library(ggplot2)
 library(sqldf)
+library(here)
 setwd(paste(here::here("Processed - Kopi","data")))
 fdf<-read.csv("fdf.csv")
 fdf$episode<-gsub("ArtPlayer", "intervention", fdf$episode)
@@ -19,7 +20,7 @@ fdfpp<- summarySE(fdf, measurevar="HRchangeInPercent", groupvars=c("episode"))
 fdfpc<- summarySE(fdf, measurevar="HRchangeInBPM", groupvars=c("episode"))
 
 
-fdfpc
+
 
 ggplot(fdfpc[fdfpc$episode!="stressor removal",], aes(x=episode, y=-1*HRchangeInBPM,group=1))+
   geom_errorbar(aes(ymin=-1*HRchangeInBPM-ci, ymax=-1*HRchangeInBPM+ci), width=.1) +
