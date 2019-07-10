@@ -1,0 +1,3 @@
+00:00:00	"Baseline"	300	0
+00:10:06	"Stressor"	300	0
+00:16:44	"Intervention"	600	0
