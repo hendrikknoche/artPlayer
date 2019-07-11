@@ -11,8 +11,8 @@ fdf$condMedium<-substr(fdf$condition,1,2)
 #fdf$episode<-gsub("Debrief", "debrief", fdf$episode)
 #fdf$episode<-gsub("syringe", "stressor", fdf$episode)
 #fdf$episode<-gsub("ThreatRemoval", "stressor removal", fdf$episode)
-#fdf$episode<-factor(fdf$episode,levels=c("baseline","stressor","intervention","stressor removal", "debrief"))
-
+fdf$episode<-factor(fdf$episode,levels=c("baseline","stressor","intervention"))
+fdf$condition<-factor(fdf$condition,levels = c("tv+","vr+","vr-"))
 level_order <- c("baseline","stressor","intervention")
 
 fdfp <- summarySE(fdf, measurevar="Avg.HR", groupvars=c("episode","condition"))
@@ -93,10 +93,12 @@ ggplot(fdfpp[fdfpp$condition=="vr-",], aes(x=episode, y=-1*HRchangeInPercent,gro
   geom_line() +
   geom_point()+ylab('heart rate change from baseline in percent')+theme_bw() + ggtitle("VR without Distractors")
 
-ggplot(fdfr, aes(x=factor(episode, level = level_order), y=RRS,group=1))+
-  geom_errorbar(aes(ymin=RRS-ci, ymax=RRS+ci), width=.1) +
-  geom_line() +
-  geom_point()+xlab('Episode')+ylab('Average RRS Rating')+theme_bw() + 
-  ggtitle("TV with Distractors") +
-  theme(axis.text=element_text(size=12),axis.title=element_text(size=14,face="bold"))
+ggplot(fdfr, aes(x=factor(episode, level = level_order), y=RRS,color=condition,group=condition))+
+  geom_errorbar(aes(ymin=RRS-ci, ymax=RRS+ci), width=.2,position = position_dodge2(width=0.2)) +
+  geom_line(position = position_dodge2(width=0.2))+
+  geom_point(position = position_dodge2(width=0.2))+ylab('Average RRS rating')+theme_bw() + xlab('')+ #+xlab('Episode')
+  theme(axis.text=element_text(size=14),axis.title=element_text(size=16),legend.position="bottom",legend.title=element_text(size=14),legend.text=element_text(size=16))+ 
+  scale_color_discrete(name = "participant group:",breaks=c("tv+", "vr+", "vr-"),labels=c("TV+", "VR+", "VR-"))
 
+plotRRS <-plotRRS + scale_color_discrete(name = "participant group:",breaks=c("tv+", "vr+", "vr-"),labels=c("TV+", "VR+", "VR-"))
+plotRRS
