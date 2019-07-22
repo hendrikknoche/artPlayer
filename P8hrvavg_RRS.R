@@ -103,7 +103,7 @@ ggplot(fdfpc, aes(x=episode, y=HRchangeInBPM,group=condition,color=condition))+
 #================ HR  plots ++
 ggplot(fdfp, aes(x=episode, y=Avg.HR,group=condition,color=condition))+
   # geom_errorbar(aes(ymin=HRchangeInBPM-ci, ymax=HRchangeInBPM+ci), width=.1) +
-  geom_line(position=position_dodge(0.2)) + ylab('heart rate change in BPM')+theme_bw() +
+  geom_line(position=position_dodge(0.2)) + ylab('heart rate in BPM')+theme_bw() +
   geom_point(position=position_dodge(0.2), size=2.5)+
   geom_errorbar(aes(ymin=Avg.HR-ci, ymax=Avg.HR+ci), width=.2, position = position_dodge(0.2))+
   scale_color_discrete(name = "participant group:",breaks=c("tv+", "vr+", "vr-"),labels=c("TV+", "VR+", "VR-"))+
