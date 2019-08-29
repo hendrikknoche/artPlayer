@@ -1,12 +1,8 @@
 library(ggplot2)
 library(sqldf)
-<<<<<<< HEAD
-library(here)
-||||||| merged common ancestors
-=======
 library(here)
 library(Rmisc)
->>>>>>> dda7a181fbc30f66062652366da9c35ee28868d6
+
 setwd(paste(here::here("Processed - Kopi","data")))
 fdf<-read.csv("fdf.csv")
 fdf$episode<-gsub("ArtPlayer", "intervention", fdf$episode)
@@ -25,13 +21,6 @@ fdf$HRchangeInBPM<-fdf$Avg.HR-fdf$HRatBaseline
 fdfpp<- summarySE(fdf, measurevar="HRchangeInPercent", groupvars=c("episode"))
 fdfpc<- summarySE(fdf, measurevar="HRchangeInBPM", groupvars=c("episode"))
 
-
-<<<<<<< HEAD
-
-||||||| merged common ancestors
-fdfpc
-=======
->>>>>>> dda7a181fbc30f66062652366da9c35ee28868d6
 
 ggplot(fdfpc[fdfpc$episode!="stressor removal",], aes(x=episode, y=-1*HRchangeInBPM,group=1))+
   geom_errorbar(aes(ymin=-1*HRchangeInBPM-ci, ymax=-1*HRchangeInBPM+ci), width=.1) +
